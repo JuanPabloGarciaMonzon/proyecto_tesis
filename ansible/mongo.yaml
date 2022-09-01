@@ -1,0 +1,47 @@
+---
+- name: MongoDB Configuration
+  hosts: mongodb
+  become: yes
+  tasks:
+   - name: Update and upgrade 
+     apt:
+       update_cache=yes
+       upgrade=yes
+   - name: Install MongoDB Server
+     apt:
+       name=mongodb
+   - name: Download and run binary package
+     shell: curl -s https://packagecloud.io/install/repositories/akopytov/sysbench/script.deb.sh | sudo bash
+     args:
+      warn: no
+   - name: Install Sysbench
+     apt:
+       name=sysbench
+   - name: Check Sysbench installation
+     command: which sysbench
+     register: sysbench_installed
+     ignore_errors: True
+     changed_when: False
+   - name: Install Drivers
+     apt:
+      pkg:
+       - libmongoc-dev 
+       - libbson-dev 
+       - luarocks
+   - name: Install Mongorover driver
+     command: luarocks install mongorover
+   - name: Create config file
+     copy:
+      src: /home/jpi/proyecto_tesis/ansible/mongodb_config
+      dest: /home/ubuntu/config
+      owner: ubuntu
+      group: ubuntu
+      mode: '0664'
+   - name: Create oltp-mongo.lua
+     copy:
+      src: /home/jpi/proyecto_tesis/ansible/oltp-mongo.lua
+      dest: /usr/share/sysbench/oltp-mongo.lua
+      owner: root
+      group: root
+      mode: '0644'
+     

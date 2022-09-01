@@ -1,0 +1,56 @@
+---
+- name: TiDB Configuration
+  hosts: tidb
+  become: yes
+  tasks:
+   - name: Update and upgrade 
+     apt:
+       update_cache=yes
+       upgrade=yes
+   - name: Install MySQL Server
+     apt:
+       name=mysql-server
+   - name: Download and run binary package
+     shell: curl -s https://packagecloud.io/install/repositories/akopytov/sysbench/script.deb.sh | sudo bash
+     args:
+      warn: no
+   - name: Install Sysbench
+     apt:
+       name=sysbench
+   - name: Check Sysbench installation
+     command: which sysbench
+     register: sysbench_installed
+     ignore_errors: True
+     changed_when: False
+   - name: Install SSHPASS
+     apt:
+       name=sshpass
+   - name: Create cluster.yaml
+     copy:
+      src: /home/jpi/proyecto_tesis/ansible/cluster.yaml
+      dest: /home/ubuntu/cluster.yaml
+      owner: ubuntu
+      group: ubuntu
+      mode: '0664'
+   - name: Create tidb_config
+     copy:
+      src: /home/jpi/proyecto_tesis/ansible/config
+      dest: /home/ubuntu/config
+      owner: ubuntu
+      group: ubuntu
+      mode: '0664'
+   - name: Create key_file.pem
+     copy:
+      src: /etc/ansible/admin_aws.pem
+      dest: /home/ubuntu/admin_aws.pem
+      owner: ubuntu
+      group: ubuntu
+      mode: '0664'
+   - name: Create oltp_common.lua
+     copy:
+      src: /home/jpi/proyecto_tesis/ansible/oltp_common.lua
+      dest: /usr/share/sysbench/oltp_common.lua
+      owner: root
+      group: root
+      mode: '0644'
+     

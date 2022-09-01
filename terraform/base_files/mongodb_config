@@ -1,0 +1,7 @@
+mongodb-host=localhost
+mongodb-port=27017
+mongodb-db=mongodb_test
+rand-type=pareto
+time=600
+threads=128
+report-interval=10

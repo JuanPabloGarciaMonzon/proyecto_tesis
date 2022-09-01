@@ -1,0 +1,13 @@
+---
+- name: TiDB Machines Configuration
+  hosts: tidb_machines
+  become: yes
+  tasks:
+   - name: Update and upgrade 
+     apt:
+       update_cache=yes
+       upgrade=yes
+   - name: Install SSHPASS
+     apt:
+       name=sshpass
+     

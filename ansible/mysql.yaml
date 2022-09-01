@@ -1,0 +1,31 @@
+---
+- name: MySQL Configuration
+  hosts: mysql
+  become: yes
+  tasks:
+   - name: Update and upgrade 
+     apt:
+       update_cache=yes
+       upgrade=yes
+   - name: Install MySQL Server
+     apt:
+       name=mysql-server
+   - name: Download and run binary package
+     shell: curl -s https://packagecloud.io/install/repositories/akopytov/sysbench/script.deb.sh | sudo bash
+     args:
+      warn: no
+   - name: Install Sysbench
+     apt:
+       name=sysbench
+   - name: Check Sysbench installation
+     command: which sysbench
+     register: sysbench_installed
+     ignore_errors: True
+     changed_when: False
+   - name: Create config file
+     copy:
+      src: /home/jpi/proyecto_tesis/ansible/mysql_config
+      dest: /home/ubuntu/config
+      owner: ubuntu
+      group: ubuntu
+      mode: '0664'

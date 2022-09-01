@@ -1,0 +1,9 @@
+mysql-host=localhost
+mysql-port=3306
+mysql-user=juan
+mysql-password=test
+mysql-db=mysql_test
+time=600
+threads=128
+report-interval=10
+db-driver=mysql
